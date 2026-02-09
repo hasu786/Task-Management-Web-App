@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow - Task Manager</title>
+    <link rel="stylesheet" href="assest\css\style.css">
+    <link rel="stylesheet" href="assest\css\responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-tasks"></i>
+                <h1>TaskFlow</h1>
+                <span class="tagline">Your Personal Task Manager</span>
+            </div>
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="total-tasks">0</span>
+                    <span class="stat-label">Total Tasks</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="pending-tasks">0</span>
+                    <span class="stat-label">Pending</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="completed-tasks">0</span>
+                    <span class="stat-label">Completed</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="sidebar">
+                <div class="project-section">
+                    <h2><i class="fas fa-folder"></i> Projects</h2>
+                    <ul class="project-list" id="project-list">
+                        <li class="project-item active" data-project="all">
+                            <i class="fas fa-list"></i> All Tasks
+                        </li>
+                        <li class="project-item" data-project="personal">
+                            <i class="fas fa-user"></i> Personal
+                        </li>
+                        <li class="project-item" data-project="work">
+                            <i class="fas fa-briefcase"></i> Work
+                        </li>
+                        <li class="project-item" data-project="shopping">
+                            <i class="fas fa-shopping-cart"></i> Shopping
+                        </li>
+                    </ul>
+                    <button class="btn add-project-btn" id="add-project-btn">
+                        <i class="fas fa-plus"></i> Add Project
+                    </button>
+                </div>
+
+                <div class="filter-section">
+                    <h2><i class="fas fa-filter"></i> Filter</h2>
+                    <div class="filter-options">
+                        <label class="filter-option">
+                            <input type="radio" name="filter" value="all" checked>
+                            <span>All Tasks</span>
+                        </label>
+                        <label class="filter-option">
+                            <input type="radio" name="filter" value="pending">
+                            <span>Pending</span>
+                        </label>
+                        <label class="filter-option">
+                            <input type="radio" name="filter" value="completed">
+                            <span>Completed</span>
+                        </label>
+                        <label class="filter-option">
+                            <input type="radio" name="filter" value="today">
+                            <span>Due Today</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="export-section">
+                    <button class="btn export-btn" id="export-btn">
+                        <i class="fas fa-file-export"></i> Export Tasks
+                    </button>
+                    <button class="btn import-btn" id="import-btn">
+                        <i class="fas fa-file-import"></i> Import Tasks
+                    </button>
+                </div>
+            </div>
+
+            <div class="task-container">
+                <div class="task-header">
+                    <h2 id="current-project">All Tasks</h2>
+                    <div class="task-actions">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="task-search" placeholder="Search tasks...">
+                        </div>
+                        <button class="btn btn-primary" id="add-task-btn">
+                            <i class="fas fa-plus"></i> Add Task
+                        </button>
+                        <button class="btn btn-secondary" id="clear-completed-btn">
+                            <i class="fas fa-trash"></i> Clear Completed
+                        </button>
+                    </div>
+                </div>
+
+                <div class="task-list" id="task-list">
+                    <!-- Tasks will be dynamically added here -->
+                    <div class="empty-state" id="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h3>No tasks yet</h3>
+                        <p>Add your first task to get started!</p>
+                        <button class="btn btn-primary" id="add-first-task">Add Task</button>
+                    </div>
+                </div>
+
+                <div class="task-summary">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <div class="summary-text">
+                        <span id="progress-text">0% Complete</span>
+                        <span id="task-count">0 tasks</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Modal for adding/editing tasks -->
+        <div class="modal" id="task-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modal-title">Add New Task</h3>
+                    <button class="close-btn" id="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="task-form">
+                        <div class="form-group">
+                            <label for="task-title">Task Title</label>
+                            <input type="text" id="task-title" placeholder="Enter task title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="task-description">Description</label>
+                            <textarea id="task-description" placeholder="Enter task description" rows="3"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="task-due-date">Due Date</label>
+                                <input type="date" id="task-due-date">
+                            </div>
+                            <div class="form-group">
+                                <label for="task-priority">Priority</label>
+                                <select id="task-priority">
+                                    <option value="low">Low</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="high">High</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="task-project">Project</label>
+                            <select id="task-project">
+                                <option value="personal">Personal</option>
+                                <option value="work" selected>Work</option>
+                                <option value="shopping">Shopping</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="task-completed">
+                                <span>Mark as completed</span>
+                            </label>
+                        </div>
+                        <input type="hidden" id="task-id">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" id="cancel-task">Cancel</button>
+                            <button type="submit" class="btn btn-primary" id="save-task">Save Task</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for adding projects -->
+        <div class="modal" id="project-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add New Project</h3>
+                    <button class="close-btn" id="close-project-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="project-form">
+                        <div class="form-group">
+                            <label for="project-name">Project Name</label>
+                            <input type="text" id="project-name" placeholder="Enter project name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="project-color">Color</label>
+                            <div class="color-options">
+                                <label class="color-option">
+                                    <input type="radio" name="project-color" value="#4CAF50" checked>
+                                    <span class="color-dot" style="background-color: #4CAF50;"></span>
+                                </label>
+                                <label class="color-option">
+                                    <input type="radio" name="project-color" value="#2196F3">
+                                    <span class="color-dot" style="background-color: #2196F3;"></span>
+                                </label>
+                                <label class="color-option">
+                                    <input type="radio" name="project-color" value="#9C27B0">
+                                    <span class="color-dot" style="background-color: #9C27B0;"></span>
+                                </label>
+                                <label class="color-option">
+                                    <input type="radio" name="project-color" value="#FF9800">
+                                    <span class="color-dot" style="background-color: #FF9800;"></span>
+                                </label>
+                                <label class="color-option">
+                                    <input type="radio" name="project-color" value="#F44336">
+                                    <span class="color-dot" style="background-color: #F44336;"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" id="cancel-project">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Add Project</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>TaskFlow - Task Management App | Designed for Portfolio</p>
+            <p class="footer-info">Tasks are saved in your browser's local storage</p>
+        </footer>
+    </div>
+
+    <script src="js\script.js"></script>
+</body>
+</html>
